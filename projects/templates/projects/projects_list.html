@@ -1,0 +1,66 @@
+{% for project in projects %}
+    <div class="col-lg-4 col-md-6 col-12 mb-4 d-flex">
+        <div class="custom-block-wrap">
+            {% with project.pictures.all|first as first_picture %}
+                <a href="{% url 'project_details' project.id %}">
+                    <img src="{{ first_picture.image.url }}" class="custom-block-image img-fluid" style="height:255px !important" alt="">
+                </a>
+            {% endwith %}
+
+            <div class="custom-block">
+                <a href="{% url 'project_details' project.id %}">
+                    <div class="custom-block-body">
+                        <div class="d-flex" style="position: relative;">
+                            <div style="position: absolute; margin-top: -25px; right: 0;">
+                                {% for i in rating_range %}
+                                    {% if i <= project.average_rating %}
+                                        <i class="fas fa-star" style="color: var(--secondary-color);"></i>
+                                    {% elif i <= project.half_star_threshold %}
+                                        <i class="fas fa-star-half-alt"
+                                           style="color: var(--secondary-color);"></i>
+                                    {% else %}
+                                        <i class="far fa-star" style="color: var(--secondary-color);"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <h5 class="mb-3" style="font-size: 1.3em;">{{ project.title|upper }}</h5>
+                        </div>
+                        <p>{{ project.details|upper|truncatechars:45 }}</p>
+
+                        <div>
+                            {% for tag in project.tags.all %}
+                                <span class="badge rounded-pill py-2 px-3">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Display the average rating as stars -->
+
+                        <div class="progress mt-4">
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: {{ project.progress }}%;"
+
+                                 aria-valuenow="{{ project.progress }}"
+                                 aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                        <div class="d-flex my-2">
+                            <p class="mb-0">
+                                <strong>Raised:</strong>
+                                ${{ project.total_raised }}
+                            </p>
+
+                            <p class="ms-auto mb-0">
+                                <strong>Goal:</strong>
+                                ${{ project.total_target }}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                <div class="spacer" style="margin-bottom: 30px;"></div>
+                <a href="{% url 'donate' project.id %}" class="custom-btn btn" style="position: absolute; bottom: 0; width: 100%;">Donate now</a>
+            </div>
+        </div>
+    </div>
+{% empty %}
+    <p>No projects found.</p>
+{% endfor %}

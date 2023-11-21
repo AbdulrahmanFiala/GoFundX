@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block home %}
+class="nav-link click-scroll"
+{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+    <div class="container text-center" style="min-height: 35vh;">
+
+        <h5 style="margin-bottom: 5rem !important;">You have Successfully Activated the Account, Now you can login your account.</h5>
+
+        <a class="custom-btn px-4" href="{% url 'login' %}">Login</a>
+
+    </div>
+</section>
+{% endblock %}

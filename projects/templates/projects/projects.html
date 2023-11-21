@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block home %}
+    class="nav-link click-scroll"
+{% endblock %}
+
+{% block products %}
+    class="nav-link click-scroll active"
+{% endblock %}
+
+{% block content %}
+
+    <section class="py-5">
+        <div class="container">
+            <h2 class="mb-5">Projects</h2>
+            <div class="row">
+                {% include 'projects/projects_list.html' with projects=projects %}
+            </div>
+            {% if user.is_authenticated %}
+            <div class="d-flex justify-content-center mt-4">
+                <a href="{% url 'create_project' %}" class="btn custom-btn mt-4">Add Project</a>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+{% endblock %}

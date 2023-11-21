@@ -1,0 +1,96 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>{% block title %} GoFundX {% endblock %}</title>
+
+        <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'css/messages/messages.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'css/templatemo-kind-heart-charity.css' %}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+    <body {% if id %}id="{{ id }}"{% endif %}>
+        <nav class="navbar navbar-expand-lg bg-light shadow-lg">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'images/logo.png' %}" class="logo img-fluid" alt="Kind Heart Charity">
+            <span>
+                GoFundX
+                <small>Non-profit Organization</small>
+            </span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a {% block home %} class="nav-link smoothscroll active" {% endblock %} href="{% url 'home' %}">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a {% block products %} class="nav-link smoothscroll" {% endblock %} href="{% url 'projects' %}">Projects</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link click-scroll dropdown-toggle" href="" id="navbarLightDropdownMenuLink"
+                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if user.is_authenticated %}
+                        {% if user.profile_picture != "" %}
+                        <img src="{{ user.profile_picture.url }}" alt="user-img" width="30" height="30" class="rounded-circle">
+                        {%else%}
+                        <i class="fa-solid fa-user"></i>
+                        {%endif%}
+                        {%else%}
+                        <i class="fa-solid fa-user"></i>
+                        {%endif%}
+                    </a>
+
+                    {% if user.is_authenticated %}
+
+                    <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+
+                        <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </ul>
+
+                    {% else %}
+
+                    <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                        <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+
+                        <li><a class="dropdown-item" href="{% url 'register' %}">Register</a></li>
+                    </ul>
+
+                    {% endif %}
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        {% include 'partials/_footer.html' %}
+
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/jquery.sticky.js' %}"></script>
+        <script src="{% static 'js/counter.js' %}"></script>
+        <script src="{% static 'js/custom.js' %}"></script>
+    </body>
+</html>

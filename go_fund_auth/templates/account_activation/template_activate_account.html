@@ -1,0 +1,10 @@
+{% autoescape off %}
+Hello {{ user.first_name }},
+
+Please click on the link below to confirm your registration:
+
+{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+Best Regards,
+GoFundX Support
+{% endautoescape %}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block home %}
+class="nav-link click-scroll"
+{% endblock %}
+
+{% block content %}
+
+{# Info Section #}
+<section class="about-section section-padding">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-6 col-md-5 col-12">
+                {% if user.profile_picture != "" %}
+                <img src="{{ user.profile_picture.url }}" alt="user-img" class="about-image ms-lg-auto bg-light shadow-lg img-fluid">
+                {%else%}
+                <div class="about-image ms-lg-auto bg-light shadow-lg img-fluid d-flex justify-content-center align-items-center">
+                    <i class="fa-solid fa-user fa-2xl"></i>
+                </div>
+                {%endif%}
+            </div>
+
+            <div class="col-lg-5 col-md-7 col-12">
+                <div class="custom-text-block">
+                    <h2 class="mb-4">{{ user.first_name }} {{ user.last_name }}</h2>
+
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+
+                    <p><strong>Phone Number:</strong>  {{ user.mobile_phone }}</p>
+
+                    <p><strong>Country:</strong>  {{ user.country }}</p>
+
+                    <p><strong>Birthday:</strong>  {{ user.birthdate }}</p>
+
+                    <ul class="social-icon mt-4">
+                        <li class="social-icon-item">
+                            <a href="{{user.facebook_profile}}" class="social-icon-link bi-facebook" target="_blank"></a>
+                        </li>
+
+                        <li class="social-icon-item">
+                            <a href="#" class="social-icon-link bi-twitter" target="_blank"></a>
+                        </li>
+
+                        <li class="social-icon-item">
+                            <a href="#" class="social-icon-link bi-instagram" target="_blank"></a>
+                        </li>
+                    </ul>
+
+                    <a href="{% url 'edit_profile' %}" class="btn custom-btn mt-4 me-3">Update Profile</a>
+                    <a href="{% url 'delete_account'%}" class="btn custom-btn mt-4 bg-danger">Delete Profile</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Projects Section #}
+<section class="section-bg section-padding py-5" id="section_4">
+     <div class="container">
+         <h2 class="mb-4">Projects</h2>
+         <div class="row">
+             {% include 'projects/projects_list.html' with projects=projects %}
+         </div>
+     </div>
+</section>
+
+{# Donations Section #}
+<section class="section-padding">
+        <div class="container">
+            <div class="row">
+                <h2 class="mb-5">Donations</h2>
+
+                {% for donation in donations %}
+                    <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0">
+                        <div class="featured-block d-flex justify-content-center align-items-center">
+                            <a href="/projects/{{ donation.project_id }}" class="d-block">
+
+                                {% with donation.project.pictures.all|first as first_picture %}
+                                    <img src="{{ first_picture.image.url }}" class="featured-block-image img-fluid" alt="">
+                                {% endwith %}
+
+                                <p class="featured-block-text">
+                                {{ donation.project.title }}
+                                 <br>
+                                ${{ donation.amount }}
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No Donations found.</p>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

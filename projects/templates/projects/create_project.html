@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block home %}
+class="nav-link click-scroll"
+{% endblock %}
+
+
+{% block content %}
+    <!--adding style to the checkbox-->
+    <style>
+        #id_existing_tags > div {
+            display: inline;
+            margin-right: 5px;
+        }
+    </style>
+
+    <section class="volunteer-section section-padding" id="section_4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-12">
+                    <h1 class="text-white mb-4 text-center">Create New Project</h1>
+                    <form
+                            method="post"
+                            enctype="multipart/form-data"
+                            class="custom-form volunteer-form mb-5 mb-lg-0">
+
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        {{ formset.management_form }}
+                        {% if formset.non_form_errors %}
+                            <div class="alert alert-danger">
+                                {{ formset.non_form_errors }}
+                            </div>
+                        {% endif %}
+                        {% for picture_form in formset %}
+                            {{ picture_form.as_p }}
+                        {% endfor %}
+                        <button type="submit" class="form-control">Add New Project</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

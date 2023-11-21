@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block home %}
+class="nav-link click-scroll"
+{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+    <div class="container">
+        {% if error %}
+        <h3 class="mb-5 text-danger">{{error}}</h3>
+        <a href="{% url 'project_details' project.id%}" class="btn custom-btn">Go back</a>
+        {% else %}
+        <h2 class="mb-5">Are you sure you want to delete your Project {{project.title}}?</h2>
+        <form method="post" class="custom-form mb-3">
+        {% csrf_token %}
+            <button type="submit" class="btn btn-primary p-3 bg-danger">Yes, delete my project</button>
+        </form>
+        <a href="{% url 'project_details' project.id%}" class="m-3">No, take me back</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

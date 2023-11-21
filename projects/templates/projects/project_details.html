@@ -1,0 +1,396 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block home %}
+    class="nav-link click-scroll"
+{% endblock %}
+
+{% block content %}
+
+    <section class="news-section section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7 col-12">
+                    <div class="news-block">
+                        <div class="news-block-top">
+                            <div
+                                    id="carouselExampleControlsNoTouching"
+                                    class="carousel slide"
+                                    data-bs-touch="false"
+                                    data-bs-interval="false">
+                                <div class="carousel-inner">
+                                    {% for picture in project.pictures.all %}
+                                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                            <img
+                                                    src="{{ picture.image.url }}"
+                                                    class="d-block w-100 project-img"
+                                                    style="height: 500px;"
+                                                    alt="Image"/>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <button
+                                        class="carousel-control-prev"
+                                        type="button"
+                                        data-bs-target="#carouselExampleControlsNoTouching"
+                                        data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button
+                                        class="carousel-control-next"
+                                        type="button"
+                                        data-bs-target="#carouselExampleControlsNoTouching"
+                                        data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" ariahidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-container">
+                        <div class="news-block-info">
+
+                            <div class="news-block-title mb-2">
+                                <h4 class="py-3 d-flex justify-content-between">{{ project.title|upper }}
+                                    {% if user.is_authenticated and user != project.user %}
+                                        {% if not user in project.reported_by.all %}
+                                            <form method="post" action="{% url 'report_project' project.id %}">
+                                                {% csrf_token %}
+                                                <button class="btn rounded-pill btn-outline-danger" type="submit">Report
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                </h4>
+                            </div>
+
+
+                            <div class="news-block-body">
+                                <p>
+                                    {{ project.details|upper }}
+                                </p>
+
+                            </div>
+
+                            <div class="social-share border-top mt-5 py-4 d-flex flex-wrap align-items-center">
+
+                                <div class="d-flex">
+                                    <a href="" class="social-icon-link bi-facebook"></a>
+
+                                    <a href="" class="social-icon-link bi-twitter"></a>
+
+                                    <a href="" class="social-icon-link bi-printer"></a>
+
+                                    <a href="" class="social-icon-link bi-envelope"></a>
+                                </div>
+                            </div>
+
+                            {% if user.is_authenticated %}
+                                <div class="my-5" id="rating">
+                                    <h6>Rate the Project</h6>
+                                    {% if user_rating is None %}
+                                        <form method="post"
+                                              style="display: flex;gap:5px; align-items: center;;padding-top:10px">
+                                            {% csrf_token %}
+                                            {{ rating_form.as_div }}
+                                            <button class="btn author-comment-link"
+                                                    style="border:1px solid black;border-radius:20px; position:relative"
+                                                    type="submit">Rate
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <p>Your Rating: <span
+                                                id="star-rating">{{ user_rating|default:"not rated yet" }}</span></p>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            {% if comments %}
+                                {% for comment in comments %}
+                                    <div class="comment-group">
+                                        <div class="author-comment d-flex mt-3 mb-4 col-md-12 flex-wrap">
+                                            {% if comment.user.profile_picture %}
+                                                <img src="{{ comment.user.profile_picture.url }}" alt="user-img"
+                                                     class="img-fluid avatar-image"
+                                                     style="width: 50px;height: 50px; text-align: center; align-self:self-start;">
+                                            {% else %}
+                                                <i class="fa-solid fa-user"
+                                                   style="width: 50px;height: 50px; text-align: center; align-self: self-start; font-size: 3em;"></i>
+                                            {% endif %}
+                                            <span class="author-comment-link"
+                                                  style="margin:5px;margin-left:400px;position:absolute">reports : {{ comment.reports_num }}</span>
+
+                                            <div class="author-comment-info ms-3">
+                                                <p class="mb-0" style="font-weight: bold; color: #000;">
+                                                    {% if comment.user.first_name %}
+                                                        {{ comment.user.first_name }}
+                                                    {% else %}
+                                                        Anonymous
+                                                    {% endif %}</p>
+
+                                                <p class="mb-0">{{ comment.content }}</p>
+
+                                                <div class="d-flex mt-2">
+                                                    {% if user == comment.user %}
+                                                        <form method="post"
+                                                              action="{% url 'delete_comment' comment.id %}">
+                                                            {% csrf_token %}
+                                                            <button class="btn author-comment-link px-0 me-3"
+                                                                    type="submit">
+                                                                Delete
+                                                            </button>
+                                                        </form>
+                                                    {% endif %}
+                                                    {% if user.is_authenticated and user != comment.user %}
+                                                        {% if not user in comment.reported_by.all %}
+                                                            <form method="post"
+                                                                  action="{% url 'report_comment' comment.id %}">
+                                                                {% csrf_token %}
+                                                                <button class="btn author-comment-link" type="submit">
+                                                                    Report
+                                                                </button>
+                                                            </form>
+                                                        {% endif %}
+                                                    {% endif %}
+
+                                                    <!-- Add a "Reply" button -->
+                                                    {% if user.is_authenticated %}
+                                                        <button class="btn author-comment-link"
+                                                                onclick="document.getElementById('reply-form-{{ comment.id }}').style.display = 'block';">
+                                                            Reply
+                                                        </button>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                            <!-- Add a form for replying to the comment -->
+                                            <div class="row w-100 ms-1">
+                                                <div class="col-md-11 offset-md-1">
+                                                    <form class="custom-form comment-form mt-4" id="reply-form-{{ comment.id }}"
+                                                          method="post"
+                                                          style="display: none;">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                                            <textarea name="content" rows="4" class="form-control mb-2" id="comment-message" placeholder="Your comment here"></textarea>
+                                                            <div class="col-lg-3 col-md-4 col-6 ms-auto">
+                                                            <button type="submit" class="form-control">Post Reply</button>
+                                                            </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                            <!-- Add reply to the comment -->
+                                            {% for reply in comment.replies.all %}
+                                            <div class="author-comment d-flex ms-5 ps-3 mt-3">
+                                                {% if reply.user.profile_picture %}
+                                                    <img src="{{ reply.user.profile_picture.url }}" alt="user-img"
+                                                         class="img-fluid avatar-image"
+                                                         style="width: 50px;height: 50px; text-align: center; align-self:self-start;">
+                                                {% else %}
+                                                    <i class="fa-solid fa-user"
+                                                       style="width: 50px;height: 50px; text-align: center; align-self: self-start; font-size: 3em;"></i>
+                                                {% endif %}
+                                                <span class="author-comment-link"
+                                                      style="margin:5px;margin-left:400px;position:absolute">reports : {{ reply.reports_num }}</span>
+
+                                                <div class="author-comment-info ms-3">
+                                                    <p class="mb-0" style="font-weight: bold; color: #000;">
+                                                        {% if reply.user.first_name %}
+                                                            {{ reply.user.first_name }}
+                                                        {% else %}
+                                                            Anonymous
+                                                        {% endif %}</p>
+
+                                                    <p class="mb-0">{{ reply.content }}</p>
+
+                                                    <div class="d-flex mt-2">
+                                                        {% if user == reply.user %}
+                                                            <form method="post"
+                                                                  action="{% url 'delete_comment' reply.id %}">
+                                                                {% csrf_token %}
+                                                                <button class="btn author-comment-link px-0 me-3"
+                                                                        type="submit">
+                                                                    Delete
+                                                                </button>
+                                                            </form>
+                                                        {% endif %}
+                                                        {% if user.is_authenticated and user != reply.user %}
+                                                            {% if not user in reply.reported_by.all %}
+                                                                <form method="post"
+                                                                      action="{% url 'report_comment' reply.id %}">
+                                                                    {% csrf_token %}
+                                                                    <button class="btn author-comment-link" type="submit">
+                                                                            Report
+                                                                    </button>
+                                                                </form>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor%}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p>No comments yet.</p>
+                            {% endif %}
+
+                            {% if user.is_authenticated %}
+                                <form class="custom-form comment-form mt-4" method="post">
+                                    {% csrf_token %}
+                                    <h6 class="mb-3">Write a comment</h6>
+                                    {{ comment_form.as_p }}
+                                    <div class="col-lg-3 col-md-4 col-6 ms-auto">
+                                        <button type="submit" class="form-control">Comment</button>
+                                    </div>
+                                </form>
+
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-12 mx-auto mt-4 mt-lg-0">
+                    <div class="news-block-author mt-4">
+                        <p>
+                            <i class="bi-person custom-icon me-1"></i>
+                            {% if project.user.first_name != '' %}
+                                <strong>{{ project.user.first_name }} {{ project.user.last_name }}</strong>
+                            {% else %}
+                                <strong>{{ project.user.email }}</strong>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="news-block-date mt-4">
+                        <p>
+                            <strong>Start</strong>
+                            <i class="bi-calendar4 custom-icon ms-2 me-1"></i>
+                            {{ project.start_time }}
+                        </p>
+                    </div>
+
+                    <div class="news-block-date">
+                        <p>
+                            <strong>End</strong>
+                            <i class="bi-calendar4 custom-icon ms-3 me-1"></i>
+                            {{ project.end_time }}
+                        </p>
+                    </div>
+
+                    <p class="mt-4">
+                        <strong>Rating</strong>
+                        {% for i in rating_range %}
+                            {% if i <= project.average_rating %}
+                                <i class="fas fa-star" style="color: var(--secondary-color);"></i>
+                            {% elif i <= project.half_star_threshold %}
+                                <i class="fas fa-star-half-alt" style="color: var(--secondary-color);"></i>
+                            {% else %}
+                                <i class="far fa-star" style="color: var(--secondary-color);"></i>
+                            {% endif %}
+                        {% endfor %}
+                        <span>({{ project.rating_set.count }})</span>
+                    </p>
+
+                    <div class="progress mt-4">
+                        <div class="progress-bar" role="progressbar"
+                             style="width: {{ project.progress }}%;"
+                             aria-valuenow="{{ project.progress }}"
+                             aria-valuemin="0" aria-valuemax="100">
+
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center my-2">
+                        <p class="mb-0">
+                            <strong>Raised:</strong>
+                            ${{ project.total_raised }}
+                        </p>
+
+                        <p class="ms-auto mb-0">
+                            <strong>Goal:</strong>
+                            ${{ project.total_target }}
+                        </p>
+                    </div>
+
+                    <div class="category-block d-flex flex-column">
+                        <h5 class="mb-3">Categories</h5>
+
+                        <div class="tags-block">
+                            <span class="badge">{{ project.category.name }}</span>
+                        </div>
+
+                    </div>
+
+                    <div class="tags-block">
+                        <h5 class="mb-3">Tags</h5>
+
+                        {% for tag in project.tags.all %}
+                            <span class="tags-block-link">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <a href="{% url 'donate' project.id %}" class="btn custom-btn custom-border-btn mt-4 me-3">Donate now</a>
+
+                    {% if user.is_authenticated %}
+                        {% if user.id == project.user.id %}
+                            <div>
+                                <a href="{% url 'update_project' project.id %}" class="btn custom-btn mt-4 me-3">Update
+                                    Project</a>
+                                <a href="{% url 'delete_project' project.id %}"
+                                   class="btn custom-btn mt-4 me-3 bg-danger">Delete Project</a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    {% if error %}
+                            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                                <strong>Error!</strong> {{ error }}
+                            </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="news-section section-padding section-bg">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-12 col-12 mb-4">
+                    <h2>Related Projects</h2>
+                </div>
+
+                {% include 'projects/projects_list.html' with projects=related_projects %}
+
+            </div>
+        </div>
+    </section>
+    <style>
+        #rating label {
+            font-size: 16px;
+            color: #333;
+            margin-right: 5px;
+        }
+
+        #rating input[type=range] {
+            width: 100px;
+            height: 10px;
+            background: #ddd;
+            border: none;
+            outline: none;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+
+        .comment-group .replies {
+            margin-left: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+{% endblock %}

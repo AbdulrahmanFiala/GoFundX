@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block home %}
+class="nav-link click-scroll"
+{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        {# Search Form #}
+        <form class="custom-form mb-5" action="/projects/search" method="get">
+            <div class="input-group"> <!-- Add the input-group class -->
+                <div class="input-group-prepend">
+                    <select name="searchType" id="searchType" class="form-control w-75 me-5 mb-0">
+                        <option value="names">Names</option>
+                        <option value="tags">Tags</option>
+                    </select>
+                </div>
+                <input type="text" name="search" id="search" class="form-control me-4 mb-0" placeholder="Search..."
+                       required>
+                 <button type="submit" class="btn btn-primary rounded-pill px-3">Search</button>
+            </div>
+        </form>
+
+        {# Search Results #}
+        <h2 class="mb-3">Search Results</h2>
+
+        <div class="row">
+            {% include 'projects/projects_list.html' with projects=results %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container py-5">
+        <h2 class="mb-5" style="color: var(--secondary-color)">Projects in Category: <span style="color: var(--primary-color)">{{ category.name }}</span></h2>
+        <div class="row">
+            {% include 'projects/projects_list.html' with projects=projects %}
+        </div>
+    </div>
+{% endblock %}

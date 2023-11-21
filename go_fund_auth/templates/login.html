@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block home %}
+    class="nav-link click-scroll"
+{% endblock %}
+
+{% block content %}
+
+    <section class="volunteer-section section-padding" id="section_4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-12">
+                    <h2 class="text-white mb-4 text-center">Login</h2>
+
+
+                    <form
+                            class="custom-form volunteer-form mb-5 mb-lg-0"
+                            method="post"
+                            enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" name="email" id="email"
+                               class="form-control" placeholder="example@example.com"
+                               required>
+
+                        <label for="email" class="form-label">Password</label>
+                        <input type="password" name="password" id="password"
+                               class="form-control" placeholder="password" required>
+
+                        <a href="{% url 'forgot_password' %}">Forgot Password?</a>
+
+                        {% if error %}
+                            <p class="text-danger mt-1">{{ error }}</p>
+                        {% endif %}
+
+                        <button type="submit" class="form-control mt-1">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

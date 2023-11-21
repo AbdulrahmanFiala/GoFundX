@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block home %}
+class="nav-link click-scroll"
+{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+    <div class="container text-center" style="min-height: 35vh;">
+        <h2 class="mb-4">Your activation link has expired!</h2>
+        <h5>Please <a href="{% url 'register' %}">register</a> again.</h5>
+    </div>
+</section>
+{% endblock %}
