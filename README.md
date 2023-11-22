@@ -16,6 +16,11 @@ Welcome to GoFundX, a full-stack web application aimed at revolutionizing crowdf
 
 - **Responsive Design**: A responsive and mobile-friendly design to ensure a consistent experience across various devices.
 
+## Tech Stack
+- **Backend: Django, Django REST Framework
+- **Frontend: HTML, CSS, JavaScript
+- **Database: SQLite
+
 ## Installation
 
 To set up GoFundX on your local machine, follow these steps:
